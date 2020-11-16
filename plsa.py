@@ -53,21 +53,11 @@ class Corpus(object):
         # your code here
         # #############################
         with open(self.documents_path) as file:
-            content = file.readlines()
-
-        for i in range(len(content)):
-            doc = metapy.index.Document()
-            doc.content(content[i])
-            tok = metapy.analyzers.ICUTokenizer(suppress_tags=True)
-            tok.set_content(doc.content())
-            tokens_temp = [token for token in tok]
-
-            if i < 100:
-                self.documents.append(tokens_temp[1:])
-            else:
-                self.documents.append(tokens_temp)
-
-            self.number_of_documents = self.number_of_documents + 1
+            for line in file.readlines():
+                d=list()
+                d.extend(line.split())
+                self.number_of_documents += 1
+                self.documents.append(d)
 
     def build_vocabulary(self):
         """
@@ -132,11 +122,11 @@ class Corpus(object):
 
         DO NOT CHANGE THIS FUNCTION
         """
-        self.document_topic_prob = np.ones((self.number_of_documents, number_of_topics))
-        self.document_topic_prob = normalize(self.document_topic_prob)
+        self.document_topic_prob = normalize(np.ones((self.number_of_documents, number_of_topics)))
+        # self.document_topic_prob = normalize(self.document_topic_prob)
 
-        self.topic_word_prob = np.ones((number_of_topics, len(self.vocabulary)))
-        self.topic_word_prob = normalize(self.topic_word_prob)
+        self.topic_word_prob = normalize(np.ones((number_of_topics, len(self.vocabulary))))
+        # self.topic_word_prob = normalize(self.topic_word_prob)
 
     def initialize(self, number_of_topics, random=False):
         """ Call the functions to initialize the matrices document_topic_prob and topic_word_prob
@@ -207,13 +197,10 @@ class Corpus(object):
         """
         # ############################
         # your code here
-        temp = np.matmul(self.document_topic_prob, self.topic_word_prob)
-        prob = 0
-        for i in range(len(temp)):
-            for j in range(len(temp[0])):
-                prob = prob + self.term_doc_matrix[i, j] * np.log(temp[i, j])
-
-        return prob
+        x = self.document_topic_prob
+        y = self.topic_word_prob
+        self.likelihoods.append(np.sum(np.log(np.matmul(x, y)) * self.term_doc_matrix))
+        return self.likelihoods[-1]
         # ############################
         
 
@@ -247,9 +234,9 @@ class Corpus(object):
             self.expectation_step()
             # m-step
             self.maximization_step(number_of_topics)
-            temp2 = self.calculate_likelihood(number_of_topics)
-            print(temp2)
-            self.likelihoods.append(temp2)
+            lh= self.calculate_likelihood(number_of_topics)
+            # print(temp2)
+            self.likelihoods.append(lh)
             if iteration == 0:
                 continue
 
@@ -258,7 +245,7 @@ class Corpus(object):
                     break
             # ############################
 
-            pass    # REMOVE THIS
+            # pass    # REMOVE THIS
 
 
 
