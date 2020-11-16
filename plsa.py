@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import metapy
 
 
 def normalize(input_matrix):
@@ -34,7 +35,6 @@ class Corpus(object):
         self.document_topic_prob = None  # P(z | d)
         self.topic_word_prob = None  # P(w | z)
         self.topic_prob = None  # P(z | d, w)
-
         self.number_of_documents = 0
         self.vocabulary_size = 0
 
@@ -272,7 +272,6 @@ def main():
     max_iterations = 50
     epsilon = 0.001
     corpus.plsa(number_of_topics, max_iterations, epsilon)
-
 
 
 if __name__ == '__main__':
