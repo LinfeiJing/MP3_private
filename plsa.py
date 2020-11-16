@@ -1,3 +1,5 @@
+import os
+os.system('pip install metapy')
 import numpy as np
 import math
 import metapy
