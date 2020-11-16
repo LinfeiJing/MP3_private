@@ -1,6 +1,8 @@
 import numpy as np
 import math
 import metapy
+import re
+
 
 
 def normalize(input_matrix):
@@ -96,8 +98,7 @@ class Corpus(object):
 
         for i in range(self.number_of_documents):
             for j in range(self.vocabulary_size):
-                self.term_doc_matrix[i][j] = sum(
-                    1 for _ in re.finditer(r'\b%s\b' % re.escape(self.vocabulary[j]), content[i]))
+                self.term_doc_matrix[i][j] = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(self.vocabulary[j]), content[i]))
 
         # ############################
         
@@ -155,8 +156,7 @@ class Corpus(object):
         for i in range(self.number_of_documents):
             for j in range(len(self.topic_prob[0])):
                 for k in range(self.vocabulary_size):
-                    self.topic_prob[i][j][k] = (self.document_topic_prob[i][j] * self.topic_word_prob[j][k]) / np.sum(
-                        self.document_topic_prob[i, :] * self.topic_word_prob[:, k])
+                    self.topic_prob[i][j][k] = (self.document_topic_prob[i][j] * self.topic_word_prob[j][k]) / np.sum(self.document_topic_prob[i, :] * self.topic_word_prob[:, k])
 
         # ############################
 
